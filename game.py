@@ -25,7 +25,7 @@ class Game():
                     running = False
                 if event.type == VIDEORESIZE:
                     # resizing the window but keeping a square screen
-                    # TODO: change to keep the start screen ratio instead of keeping squared
+                    # FIXME: change to keep the start screen ratio instead of keeping squared
                     if max(event.w, event.h) >= min(self.max_width, self.max_height):
                         new_size = min(self.max_width, self.max_height)
                     else:
