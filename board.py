@@ -22,7 +22,6 @@ class Board():
 
         random.shuffle(board_row)
         self.board = array_to_matrix(board_row, self.size[1])
-        print(len(self.board))
         self.insert_numbers()
 
     def insert_numbers(self):
@@ -57,7 +56,7 @@ class Board():
                     if(self.is_on_board(row+1, col+1)):
                         if(self.board[row+1][col+1].name == 'bomb'):
                             number += 1
-                    # Place number if is not 0 (zero)
+                    # Place number piece if is not 0 (zero):
                     if number != 0:
                         self.board[row][col] = Piece('#'+str(number))
 
@@ -80,6 +79,11 @@ class Board():
         piece = self.get_piece(row, col)
         if piece.is_hidden:
             piece.is_flagged = not piece.is_flagged
+
+    def reveal_board(self):
+        board_row = [piece for row in self.board for piece in row]
+        for piece in board_row:
+            piece.is_hidden = False
 
 
 class Piece():
