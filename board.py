@@ -31,29 +31,37 @@ class Board():
                 if self.board[row][col].name == 'bomb':
                     continue
                 else:
-                    # FIXME: Update corners and improve this part, probably changing Piece Class
-                    if ((row + 1 < self.size[0]) and (row-1) >= 0) and ((col + 1 < self.size[1]) and (col-1) >= 0):
-                        if self.board[row-1][col].name == 'bomb':
+                    # checking neighbors
+                    if(self.is_on_board(row-1, col-1)):
+                        if(self.board[row-1][col-1].name == 'bomb'):
                             number += 1
-                        if self.board[row-1][col-1].name == 'bomb':
+                    if(self.is_on_board(row-1, col)):
+                        if(self.board[row-1][col].name == 'bomb'):
                             number += 1
-                        if self.board[row-1][col+1].name == 'bomb':
+                    if(self.is_on_board(row-1, col+1)):
+                        if(self.board[row-1][col+1].name == 'bomb'):
                             number += 1
-                        if self.board[row][col+1].name == 'bomb':
+                    if(self.is_on_board(row, col-1)):
+                        if(self.board[row][col-1].name == 'bomb'):
                             number += 1
-                        if self.board[row][col-1].name == 'bomb':
+                    if(self.is_on_board(row, col+1)):
+                        if(self.board[row][col+1].name == 'bomb'):
                             number += 1
-                        if self.board[row+1][col].name == 'bomb':
+                    if(self.is_on_board(row+1, col-1)):
+                        if(self.board[row+1][col-1].name == 'bomb'):
                             number += 1
-                        if self.board[row+1][col-1].name == 'bomb':
+                    if(self.is_on_board(row+1, col)):
+                        if(self.board[row+1][col].name == 'bomb'):
                             number += 1
-                        if self.board[row+1][col+1].name == 'bomb':
+                    if(self.is_on_board(row+1, col+1)):
+                        if(self.board[row+1][col+1].name == 'bomb'):
                             number += 1
-                        if number > 0:
-                            self.board[row][col] = Piece('#'+str(number))
+                    # Place number if is not 0 (zero)
+                    if number != 0:
+                        self.board[row][col] = Piece('#'+str(number))
 
     def is_on_board(self, row, col):
-        return (row >= 0) and (row < len(self.size[0])) and (col >= 0) and (col < len(self.size[1]))
+        return (row >= 0) and (row < self.size[0]) and (col >= 0) and (col < self.size[1])
 
     def get_piece(self, row, col):
         return self.board[row][col]
