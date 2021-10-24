@@ -72,6 +72,8 @@ class Board():
         piece = self.get_piece(row, col)
         if not piece.is_flagged:
             piece.is_hidden = False
+            if piece.name == 'cleared':
+                self.reveal_neighbors(row, col)
 
     def flag_piece_from_pos(self, x, y, piece_size):
         col = x//piece_size[0]
@@ -84,6 +86,64 @@ class Board():
         board_row = [piece for row in self.board for piece in row]
         for piece in board_row:
             piece.is_hidden = False
+
+    def reveal_neighbors(self, row, col):
+        # checking neighbors
+        if(self.is_on_board(row-1, col-1)):
+            piece = self.board[row-1][col-1]
+            if(piece.name != 'bomb' and piece.is_hidden):
+                piece.reveal_piece()
+                if(piece.name == 'cleared'):
+                    self.reveal_neighbors(row-1, col-1)
+
+        if(self.is_on_board(row-1, col)):
+            piece = self.board[row-1][col]
+            if(piece.name != 'bomb' and piece.is_hidden):
+                piece.reveal_piece()
+                if(piece.name == 'cleared'):
+                    self.reveal_neighbors(row-1, col)
+
+        if(self.is_on_board(row-1, col+1)):
+            piece = self.board[row-1][col+1]
+            if(piece.name != 'bomb' and piece.is_hidden):
+                piece.reveal_piece()
+                if(piece.name == 'cleared'):
+                    self.reveal_neighbors(row-1, col+1)
+
+        if(self.is_on_board(row, col-1)):
+            piece = self.board[row][col-1]
+            if(piece.name != 'bomb' and piece.is_hidden):
+                piece.reveal_piece()
+                if(piece.name == 'cleared'):
+                    self.reveal_neighbors(row, col-1)
+
+        if(self.is_on_board(row, col+1)):
+            piece = self.board[row][col+1]
+            if(piece.name != 'bomb' and piece.is_hidden):
+                piece.reveal_piece()
+                if(piece.name == 'cleared'):
+                    self.reveal_neighbors(row, col+1)
+
+        if(self.is_on_board(row+1, col-1)):
+            piece = self.board[row+1][col-1]
+            if(piece.name != 'bomb' and piece.is_hidden):
+                piece.reveal_piece()
+                if(piece.name == 'cleared'):
+                    self.reveal_neighbors(row+1, col-1)
+
+        if(self.is_on_board(row+1, col)):
+            piece = self.board[row+1][col]
+            if(piece.name != 'bomb' and piece.is_hidden):
+                piece.reveal_piece()
+                if(piece.name == 'cleared'):
+                    self.reveal_neighbors(row+1, col)
+
+        if(self.is_on_board(row+1, col+1)):
+            piece = self.board[row+1][col+1]
+            if(piece.name != 'bomb' and piece.is_hidden):
+                piece.reveal_piece()
+                if(piece.name == 'cleared'):
+                    self.reveal_neighbors(row+1, col+1)
 
 
 class Piece():
