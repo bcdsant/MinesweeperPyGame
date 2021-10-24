@@ -2,10 +2,12 @@ from game import Game
 from board import Board
 
 
-BOARD_SIZE = (BOARD_WIDTH, BOARD_HIGHT) = (10, 10)
-BOMBS_QTD = 50
+# Beginner: 9x9 Board with 10 bombs
+# Intermediary: 16x16 with 40 bombs
+# Advanced: 30x16 with 99 bombs
+BOARD_SIZE = (BOARD_WIDTH, BOARD_HIGHT) = (9, 9)
+BOMBS_QTD = 10
 BOARD = Board(BOARD_SIZE, BOMBS_QTD)
-SCREEN_SIZE = (SCREEN_WIDTH, SCREEN_HIGHT) = (45*BOARD_WIDTH, 45*BOARD_HIGHT)
 
-game = Game(board=BOARD, screen_size=SCREEN_SIZE)
+game = Game(board=BOARD)
 game.run()

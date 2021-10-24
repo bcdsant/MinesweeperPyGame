@@ -13,17 +13,19 @@ END_STATUS = {
 
 
 class Game():
-    def __init__(self, board, screen_size):
+    def __init__(self, board):
+        pygame.init()
+        display_info = pygame.display.Info()
+        self.max_width = display_info.current_w - 150
+        self.max_height = display_info.current_h - 150
         self.board = board
-        (self.sceen_width, self.screen_height) = self.screen_size = screen_size
         self.set_piece_size()
+        self.screen_size = (self.board.size[0]*self.piece_size,
+                            self.board.size[1]*self.piece_size)
         self.game_ended = False
 
     def run(self):
-        pygame.init()
-        display_info = pygame.display.Info()
-        self.max_width = display_info.current_w
-        self.max_height = display_info.current_h
+
         self.screen = set_display(self.screen_size, RESIZABLE)
         running = True
         self.draw_board()
@@ -34,13 +36,29 @@ class Game():
                     running = False
 
                 if event.type == VIDEORESIZE:
-                    # resizing the window but keeping a square screen
-                    # FIXME: change to keep the start screen ratio instead of keeping squared
-                    if max(event.w, event.h) >= min(self.max_width, self.max_height):
-                        new_size = min(self.max_width, self.max_height)
-                    else:
-                        new_size = max(event.w, event.h)
-                    self.update_screen(new_size, new_size)
+                    old_screen_size = self.screen_size
+                    new_piece_size = self.piece_size
+                    if event.w > old_screen_size[0]:
+                        new_piece_size = min(
+                            event.w, self.max_width) // self.board.size[0]
+                        if new_piece_size*self.board.size[1] > self.max_height:
+                            new_piece_size = self.max_height // self.board.size[1]
+                    elif event.w < old_screen_size[0]:
+                        new_piece_size = event.w // self.board.size[0]
+                    elif event.h > old_screen_size[1]:
+                        new_piece_size = min(
+                            event.h, self.max_height) // self.board.size[1]
+                        if new_piece_size*self.board.size[0] > self.max_width:
+                            new_piece_size = self.max_width // self.board.size[0]
+                    elif event.h < old_screen_size[1]:
+                        new_piece_size = event.h//self.board.size[1]
+
+                    self.set_piece_size(new_piece_size)
+                    new_size = (
+                        self.piece_size*self.board.size[0],
+                        self.piece_size*self.board.size[1]
+                    )
+                    self.update_screen(*new_size)
 
                 # Leflt mouse button pressed
                 if event.type == MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]:
@@ -82,14 +100,24 @@ class Game():
                     image = piece.image
                 if piece.name == 'bomb' and not piece.is_hidden and not self.game_ended:
                     self.end_game(GAME_OVER)
-                image = pygame.transform.scale(image, self.piece_size)
+                image = pygame.transform.scale(
+                    image, (self.piece_size, self.piece_size))
                 self.screen.blit(image, drawing_pos)
-                drawing_pos = (drawing_pos[0] + self.piece_size[0],
+                drawing_pos = (drawing_pos[0] + self.piece_size,
                                drawing_pos[1])
-            drawing_pos = (0, drawing_pos[1] + self.piece_size[1])
+            drawing_pos = (0, drawing_pos[1] + self.piece_size)
 
-    def set_piece_size(self):
-        self.piece_size = self.screen_size[0] // self.board.size[0], self.screen_size[1] // self.board.size[1]
+    def set_piece_size(self, size=None):
+        if size is None:
+            if hasattr(self, 'screen_size'):
+                self.piece_size = self.screen_size[0] // self.board.size[0]
+            else:
+                if min(self.max_width, self.max_height) == self.max_width:
+                    self.piece_size = self.max_width // self.board.size[0]
+                else:
+                    self.piece_size = self.max_height // self.board.size[1]
+        else:
+            self.piece_size = size
 
     def end_game(self, end_status):
         self.game_ended = True

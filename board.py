@@ -67,8 +67,8 @@ class Board():
         return self.board[row][col]
 
     def reveal_piece_from_pos(self, x, y, piece_size):
-        col = x//piece_size[0]
-        row = y//piece_size[1]
+        col = x//piece_size
+        row = y//piece_size
         piece = self.get_piece(row, col)
         if not piece.is_flagged:
             piece.is_hidden = False
@@ -76,8 +76,8 @@ class Board():
                 self.reveal_neighbors(row, col)
 
     def flag_piece_from_pos(self, x, y, piece_size):
-        col = x//piece_size[0]
-        row = y//piece_size[1]
+        col = x//piece_size
+        row = y//piece_size
         piece = self.get_piece(row, col)
         if piece.is_hidden:
             piece.is_flagged = not piece.is_flagged
