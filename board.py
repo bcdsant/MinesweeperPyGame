@@ -1,4 +1,4 @@
-from utils import find
+from utils import find, array_to_matrix
 import random
 import pygame
 
@@ -10,14 +10,18 @@ class Board():
         self.set_board()
 
     def set_board(self):
-        self.board = []
-        for row in range(self.size[0]):
-            row = []
-            for col in range(self.size[1]):
+        board_row = []
+        bombs_placed = 0
+        for _ in range(self.size[0]*self.size[1]):
+            if bombs_placed < self.bombs:
+                piece = Piece('bomb')
+                bombs_placed += 1
+            else:
                 piece = Piece('cleared')
-                row.append(piece)
-            self.board.append(row)
-        self.insert_bombs()
+            board_row.append(piece)
+
+        random.shuffle(board_row)
+        self.board = array_to_matrix(board_row, self.size[1])
         self.insert_numbers()
 
     def insert_numbers(self):
@@ -48,16 +52,8 @@ class Board():
                         if number > 0:
                             self.board[row][col] = Piece('#'+str(number))
 
-    def insert_bombs(self):
-        # FIXME: It is not inserting the correct number of bombs
-        random.seed()
-        bomb_coords = [
-            (random.randrange(0, self.size[0]-1),
-             random.randrange(0, self.size[1]-1)) for _ in range(self.bombs)
-        ]
-
-        for coord in bomb_coords:
-            self.board[coord[0]][coord[1]] = Piece('bomb')
+    def is_on_board(self, row, col):
+        return (row >= 0) and (row < len(self.size[0])) and (col >= 0) and (col < len(self.size[1]))
 
     def get_piece(self, row, col):
         return self.board[row][col]
