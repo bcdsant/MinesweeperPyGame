@@ -1,9 +1,15 @@
 import pygame
 import os
 from pygame import RESIZABLE, VIDEORESIZE, QUIT
-from pygame.constants import MOUSEBUTTONDOWN, MOUSEBUTTONUP
+from pygame.constants import KEYDOWN, MOUSEBUTTONDOWN, MOUSEBUTTONUP, K_r
 from pygame.display import set_mode as set_display
 from board import Piece
+GAME_OVER = 'lost'
+GAME_WON = 'win'
+END_STATUS = {
+    GAME_OVER: 'You lost!',
+    GAME_WON: 'You won!'
+}
 
 
 class Game():
@@ -11,6 +17,7 @@ class Game():
         self.board = board
         (self.sceen_width, self.screen_height) = self.screen_size = screen_size
         self.set_piece_size()
+        self.game_ended = False
 
     def run(self):
         pygame.init()
@@ -47,6 +54,11 @@ class Game():
                     self.board.flag_piece_from_pos(x, y, self.piece_size)
                     self.draw_board()
 
+                # R key pressed
+                if event.type == KEYDOWN and pygame.key.get_pressed()[K_r]:
+                    self.board.reveal_board()
+                    self.draw_board()
+
             pygame.display.flip()
         pygame.quit()
 
@@ -68,6 +80,8 @@ class Game():
                     image = Piece('blank').image
                 else:
                     image = piece.image
+                if piece.name == 'bomb' and not piece.is_hidden and not self.game_ended:
+                    self.end_game(GAME_OVER)
                 image = pygame.transform.scale(image, self.piece_size)
                 self.screen.blit(image, drawing_pos)
                 drawing_pos = (drawing_pos[0] + self.piece_size[0],
@@ -76,3 +90,9 @@ class Game():
 
     def set_piece_size(self):
         self.piece_size = self.screen_size[0] // self.board.size[0], self.screen_size[1] // self.board.size[1]
+
+    def end_game(self, end_status):
+        self.game_ended = True
+        self.board.reveal_board()
+        self.draw_board()
+        print(END_STATUS[end_status])
