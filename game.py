@@ -1,7 +1,9 @@
 import pygame
 import os
 from pygame import RESIZABLE, VIDEORESIZE, QUIT
+from pygame.constants import MOUSEBUTTONDOWN, MOUSEBUTTONUP
 from pygame.display import set_mode as set_display
+from board import Piece
 
 
 class Game():
@@ -31,7 +33,10 @@ class Game():
                     else:
                         new_size = max(event.w, event.h)
                     self.update_screen(new_size, new_size)
-
+                if event.type == MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]:
+                    x, y = pygame.mouse.get_pos()
+                    self.board.reveal_piece_from_pos(x, y, self.piece_size)
+                    self.draw_board()
             pygame.display.flip()
         pygame.quit()
 
@@ -46,7 +51,11 @@ class Game():
 
         for col in range(self.board.size[1]):
             for row in range(self.board.size[0]):
-                image = self.board.get_piece(col, row).image
+                piece = self.board.get_piece(col, row)
+                if piece.is_hidden:
+                    image = Piece('blank').image
+                else:
+                    image = piece.image
                 image = pygame.transform.scale(image, self.piece_size)
                 self.screen.blit(image, drawing_pos)
                 drawing_pos = (drawing_pos[0] + self.piece_size[0],
