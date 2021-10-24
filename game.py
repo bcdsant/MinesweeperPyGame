@@ -11,7 +11,6 @@ class Game():
         self.board = board
         (self.sceen_width, self.screen_height) = self.screen_size = screen_size
         self.set_piece_size()
-        self.load_images()
 
     def run(self):
         pygame.init()
@@ -77,10 +76,3 @@ class Game():
 
     def set_piece_size(self):
         self.piece_size = self.screen_size[0] // self.board.size[0], self.screen_size[1] // self.board.size[1]
-
-    def load_images(self):
-        self.images = {}
-        for file_name in os.listdir('images'):
-            if file_name.endswith('.png'):
-                image = pygame.image.load(r'images/' + file_name)
-                self.images[file_name.split('.')[0]] = image
