@@ -10,6 +10,7 @@ END_STATUS = {
     GAME_OVER: 'You lost!',
     GAME_WON: 'You won!'
 }
+# TODO: Implement wining the game, condition: GAME_WON when all the nom bombs pieces are revealed
 
 
 class Game():
