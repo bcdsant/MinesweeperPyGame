@@ -70,14 +70,23 @@ class Board():
     def reveal_piece_from_pos(self, x, y, piece_size):
         col = x//piece_size[0]
         row = y//piece_size[1]
-        self.get_piece(row, col).is_hidden = False
+        piece = self.get_piece(row, col)
+        if not piece.is_flagged:
+            piece.is_hidden = False
+
+    def flag_piece_from_pos(self, x, y, piece_size):
+        col = x//piece_size[0]
+        row = y//piece_size[1]
+        piece = self.get_piece(row, col)
+        if piece.is_hidden:
+            piece.is_flagged = not piece.is_flagged
 
 
 class Piece():
-    # TODO: improve Piece class to hold more information
     def __init__(self, name, img_ext='.png'):
         self.name = name
         self.is_hidden = True
+        self.is_flagged = False
         self.img_ext = img_ext
         self.load_piece_image()
 

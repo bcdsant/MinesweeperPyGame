@@ -23,8 +23,10 @@ class Game():
         self.draw_board()
         while running:
             for event in pygame.event.get():
+
                 if event.type == QUIT:
                     running = False
+
                 if event.type == VIDEORESIZE:
                     # resizing the window but keeping a square screen
                     # FIXME: change to keep the start screen ratio instead of keeping squared
@@ -33,10 +35,19 @@ class Game():
                     else:
                         new_size = max(event.w, event.h)
                     self.update_screen(new_size, new_size)
+
+                # Leflt mouse button pressed
                 if event.type == MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]:
                     x, y = pygame.mouse.get_pos()
                     self.board.reveal_piece_from_pos(x, y, self.piece_size)
                     self.draw_board()
+
+                # Right mouse button pressed
+                if event.type == MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[2]:
+                    x, y = pygame.mouse.get_pos()
+                    self.board.flag_piece_from_pos(x, y, self.piece_size)
+                    self.draw_board()
+
             pygame.display.flip()
         pygame.quit()
 
@@ -52,7 +63,9 @@ class Game():
         for col in range(self.board.size[1]):
             for row in range(self.board.size[0]):
                 piece = self.board.get_piece(col, row)
-                if piece.is_hidden:
+                if piece.is_flagged:
+                    image = Piece('flag').image
+                elif piece.is_hidden:
                     image = Piece('blank').image
                 else:
                     image = piece.image
