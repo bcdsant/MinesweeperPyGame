@@ -102,6 +102,8 @@ class Game():
                     image = piece.image
                 if piece.name == 'bomb' and not piece.is_hidden and not self.game_ended:
                     self.end_game(GAME_OVER)
+                if self.board.pieces_revealed >= self.board.size[0]*self.board.size[1] - self.board.bombs and not self.game_ended:
+                    self.end_game(GAME_WON)
                 image = pygame.transform.scale(
                     image, (self.piece_size, self.piece_size))
                 self.screen.blit(image, drawing_pos)

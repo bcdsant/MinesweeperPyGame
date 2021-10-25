@@ -7,6 +7,7 @@ class Board():
     def __init__(self, size, bombs):
         self.size = size
         self.bombs = bombs
+        self.pieces_revealed = 0
         self.set_board()
 
     def set_board(self):
@@ -72,6 +73,7 @@ class Board():
         piece = self.get_piece(row, col)
         if not piece.is_flagged:
             piece.is_hidden = False
+            self.pieces_revealed += 1
             if piece.name == 'cleared':
                 self.reveal_neighbors(row, col)
 
@@ -93,6 +95,7 @@ class Board():
             piece = self.board[row-1][col-1]
             if(piece.name != 'bomb' and piece.is_hidden):
                 piece.reveal_piece()
+                self.pieces_revealed += 1
                 if(piece.name == 'cleared'):
                     self.reveal_neighbors(row-1, col-1)
 
@@ -100,6 +103,7 @@ class Board():
             piece = self.board[row-1][col]
             if(piece.name != 'bomb' and piece.is_hidden):
                 piece.reveal_piece()
+                self.pieces_revealed += 1
                 if(piece.name == 'cleared'):
                     self.reveal_neighbors(row-1, col)
 
@@ -107,6 +111,7 @@ class Board():
             piece = self.board[row-1][col+1]
             if(piece.name != 'bomb' and piece.is_hidden):
                 piece.reveal_piece()
+                self.pieces_revealed += 1
                 if(piece.name == 'cleared'):
                     self.reveal_neighbors(row-1, col+1)
 
@@ -114,6 +119,7 @@ class Board():
             piece = self.board[row][col-1]
             if(piece.name != 'bomb' and piece.is_hidden):
                 piece.reveal_piece()
+                self.pieces_revealed += 1
                 if(piece.name == 'cleared'):
                     self.reveal_neighbors(row, col-1)
 
@@ -121,6 +127,7 @@ class Board():
             piece = self.board[row][col+1]
             if(piece.name != 'bomb' and piece.is_hidden):
                 piece.reveal_piece()
+                self.pieces_revealed += 1
                 if(piece.name == 'cleared'):
                     self.reveal_neighbors(row, col+1)
 
@@ -128,6 +135,7 @@ class Board():
             piece = self.board[row+1][col-1]
             if(piece.name != 'bomb' and piece.is_hidden):
                 piece.reveal_piece()
+                self.pieces_revealed += 1
                 if(piece.name == 'cleared'):
                     self.reveal_neighbors(row+1, col-1)
 
@@ -135,6 +143,7 @@ class Board():
             piece = self.board[row+1][col]
             if(piece.name != 'bomb' and piece.is_hidden):
                 piece.reveal_piece()
+                self.pieces_revealed += 1
                 if(piece.name == 'cleared'):
                     self.reveal_neighbors(row+1, col)
 
@@ -142,6 +151,7 @@ class Board():
             piece = self.board[row+1][col+1]
             if(piece.name != 'bomb' and piece.is_hidden):
                 piece.reveal_piece()
+                self.pieces_revealed += 1
                 if(piece.name == 'cleared'):
                     self.reveal_neighbors(row+1, col+1)
 
