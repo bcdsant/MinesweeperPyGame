@@ -1,16 +1,18 @@
 import pygame
-import os
 from pygame import RESIZABLE, VIDEORESIZE, QUIT
 from pygame.constants import KEYDOWN, MOUSEBUTTONDOWN, MOUSEBUTTONUP, K_r
 from pygame.display import set_mode as set_display
-from board import Piece
+from board import Board, Piece
 GAME_OVER = 'lost'
 GAME_WON = 'win'
 END_STATUS = {
     GAME_OVER: 'You lost!',
     GAME_WON: 'You won!'
 }
-# TODO: Implement wining the game, condition: GAME_WON when all the nom bombs pieces are revealed
+LIGHT_GRAY = (220, 220, 220)
+BLACK = (0, 0, 0)
+
+# TODO: Create a menu with options
 
 
 class Game():
@@ -28,7 +30,62 @@ class Game():
     def run(self):
 
         self.screen = set_display(self.screen_size, RESIZABLE)
-        running = True
+        pygame.display.set_caption('Minesweeper')
+
+        running = False
+        on_menu = True
+
+        while on_menu:
+            self.screen.fill(LIGHT_GRAY)
+            font = pygame.font.Font('font/game_plan_dker.ttf', 32)
+            font_50 = pygame.font.Font('font/game_plan_dker.ttf', 50)
+            minesweeper_text = font_50.render('MINESWEEPER', True, BLACK)
+            beginner_text = font.render('Beginner', True, BLACK)
+            intermediary_text = font.render('Intermediary', True, BLACK)
+            advanced_text = font.render('Advanced', True, BLACK)
+
+            minesweeper_rect = minesweeper_text.get_rect()
+            minesweeper_rect.center = (self.screen_size[0]//2, 50)
+            self.screen.blit(minesweeper_text, minesweeper_rect)
+
+            beginner_rect = beginner_text.get_rect()
+            beginner_rect.center = (self.screen_size[0]//2, 150)
+            self.screen.blit(beginner_text, beginner_rect)
+
+            intermediary_rect = intermediary_text.get_rect()
+            intermediary_rect.center = (self.screen_size[0]//2, 200)
+            self.screen.blit(intermediary_text, intermediary_rect)
+
+            advanced_rect = advanced_text.get_rect()
+            advanced_rect.center = (self.screen_size[0]//2, 250)
+            self.screen.blit(advanced_text, advanced_rect)
+
+            pygame.display.update()
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    on_menu = False
+                if event.type == VIDEORESIZE:
+                    # TODO: resize font on menu
+                    self.resize_screen(event)
+                # Leflt mouse button pressed
+                if event.type == MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]:
+                    _, y = pygame.mouse.get_pos()
+                    if 130 < y < 170:
+                        # begginer
+                        self.board = Board((9, 9), 10)
+                        on_menu = False
+                        running = True
+                    if 180 < y < 210:
+                        # intermediary
+                        self.board = Board((16, 16), 40)
+                        on_menu = False
+                        running = True
+                    if 220 < y < 260:
+                        # advanced
+                        self.board = Board((30, 16), 99)
+                        on_menu = False
+                        running = True
+
         self.draw_board()
         while running:
             for event in pygame.event.get():
@@ -60,6 +117,7 @@ class Game():
         pygame.quit()
 
     def resize_screen(self, event):
+        # TODO: Improve resizing and resize the menu
         old_screen_size = self.screen_size
         new_piece_size = self.piece_size
         if event.w > old_screen_size[0]:
