@@ -19,15 +19,14 @@ class Game():
         display_info = pygame.display.Info()
         self.max_width = display_info.current_w - 100
         self.max_height = display_info.current_h - 100
-        self.set_piece_size(
-            min(self.max_width, self.max_height)//9
-        )
-        self.screen_size = (9*self.piece_size,
-                            9*self.piece_size)
+        # TODO: Change game creation to work without a board
+        self.board = Board((9, 9), 10)
+        self.set_piece_size()
+        self.screen_size = (self.board.size[0]*self.piece_size,
+                            self.board.size[1]*self.piece_size)
         self.game_ended = False
 
     def run(self):
-
         self.screen = set_display(self.screen_size, RESIZABLE)
         pygame.display.set_caption('Minesweeper')
 
@@ -146,7 +145,6 @@ class Game():
         pygame.display.flip()
 
     def resize_screen(self, event):
-        # TODO: Improve resizing and resize the menu
         old_screen_size = self.screen_size
         new_piece_size = self.piece_size
         if event.w > old_screen_size[0]:
