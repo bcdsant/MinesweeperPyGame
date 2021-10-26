@@ -19,8 +19,7 @@ class Game():
         display_info = pygame.display.Info()
         self.max_width = display_info.current_w - 100
         self.max_height = display_info.current_h - 100
-        # TODO: Change game creation to work without a board
-        self.board = Board((9, 9), 10)
+        self.board = Board()
         self.set_piece_size()
         self.screen_size = (self.board.size[0]*self.piece_size,
                             self.board.size[1]*self.piece_size)
@@ -95,7 +94,7 @@ class Game():
                             self.draw_board()
 
                 # Game Controls
-                elif self.on_game:
+                elif self.on_game and not self.game_ended:
                     # Leflt mouse button pressed
                     if event.type == MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]:
                         x, y = pygame.mouse.get_pos()
@@ -196,9 +195,11 @@ class Game():
                 elif piece.name == 'bomb' and not piece.is_hidden and not self.game_ended:
                     self.on_game = False
                     self.end_game(GAME_OVER)
+                    break
                 elif self.board.pieces_revealed >= self.board.size[0]*self.board.size[1] - self.board.bombs and not self.game_ended:
                     self.on_game = False
                     self.end_game(GAME_WON)
+                    break
                 else:
                     image = piece.image
                 image = pygame.transform.scale(

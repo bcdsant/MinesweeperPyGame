@@ -4,7 +4,7 @@ import pygame
 
 
 class Board():
-    def __init__(self, size, bombs):
+    def __init__(self, size=(9, 9), bombs=10):
         self.size = size
         self.bombs = bombs
         self.pieces_revealed = 0
