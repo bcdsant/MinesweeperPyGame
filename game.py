@@ -1,8 +1,9 @@
 import pygame
 from pygame import RESIZABLE, VIDEORESIZE, QUIT
-from pygame.constants import KEYDOWN, MOUSEBUTTONDOWN, K_m, K_r
+from pygame.constants import K_ESCAPE, KEYDOWN, MOUSEBUTTONDOWN, K_c, K_g, K_m, K_r
 from pygame.display import set_mode as set_display
 from board import Board, Piece
+
 GAME_OVER = 'lost'
 GAME_WON = 'win'
 END_STATUS = {
@@ -32,6 +33,7 @@ class Game():
         running = True
         self.on_menu = True
         self.on_game = False
+        self.on_controls = False
         if self.on_menu:
             self.draw_menu()
 
@@ -54,11 +56,13 @@ class Game():
                             self.beginner_rect.left,
                             self.intermediary_rect.left,
                             self.advanced_rect.left,
+                            self.controls_rect.left,
                         )
                         right_boundary = max(
                             self.beginner_rect.right,
                             self.intermediary_rect.right,
                             self.advanced_rect.right,
+                            self.controls_rect.right,
                         )
 
                         if left_boundary < x < right_boundary:
@@ -84,14 +88,13 @@ class Game():
                                 self.game_ended = False
                                 self.update_screen()
                                 self.draw_board()
-
-                    # M key pressed: go to back to active game
-                    if event.type == KEYDOWN and pygame.key.get_pressed()[K_m]:
-                        print('M on menu')
-                        self.on_game = True
-                        self.on_menu = False
-                        if hasattr(self, 'board'):
-                            self.draw_board()
+                            if self.controls_rect.top < y < self.controls_rect.bottom:
+                                # draw controls
+                                self.on_controls = True
+                                self.on_menu = False
+                                self.on_game = False
+                                self.game_ended = False
+                                self.draw_controls()
 
                 # Game Controls
                 elif self.on_game and not self.game_ended:
@@ -112,18 +115,82 @@ class Game():
                         self.board.reveal_board()
                         self.draw_board()
 
-                # M key pressed: go to Menu
-                elif event.type == KEYDOWN and pygame.key.get_pressed()[K_m]:
-                    print('M on end game and not on menu')
-                    self.on_game = False
-                    self.on_menu = True
-                    self.draw_menu()
+                # Global Controls
+                if self.on_game or self.on_menu or self.on_controls:
+                    # M key pressed: Show Main Menu
+                    if event.type == KEYDOWN and pygame.key.get_pressed()[K_m]:
+                        self.on_game = False
+                        self.on_menu = True
+                        self.draw_menu()
+                    # C key pressed: Show Controls
+                    elif event.type == KEYDOWN and pygame.key.get_pressed()[K_c]:
+                        self.on_controls = True
+                        self.on_game = False
+                        self.on_menu = False
+                        self.draw_controls()
+                    # G key pressed: go to back to active game
+                    elif event.type == KEYDOWN and pygame.key.get_pressed()[K_g]:
+                        self.on_game = True
+                        self.on_menu = False
+                        if hasattr(self, 'board'):
+                            self.draw_board()
+                        else:
+                            self.draw_menu()
+                    # ESC key pressed: close the game
+                    elif event.type == KEYDOWN and pygame.key.get_pressed()[K_ESCAPE]:
+                        running = False
 
         pygame.quit()
+
+    def draw_controls(self):
+        self.screen.fill(LIGHT_GRAY)
+
+        controls_text = self.font_50.render('Controls', True, BLACK)
+        controls_rect = controls_text.get_rect()
+        controls_rect.center = (self.screen_size[0]//2, 50)
+        self.screen.blit(controls_text, controls_rect)
+
+        mouse_lb_text = self.font_c.render(
+            'Left Mouse Button > Reveal Piece', True, BLACK)
+        mouse_lb_rect = mouse_lb_text.get_rect()
+        mouse_lb_rect.center = (self.screen_size[0]//2, 150)
+        self.screen.blit(mouse_lb_text, mouse_lb_rect)
+
+        mouse_rb_text = self.font_c.render(
+            'Right Mouse Button > Flag Piece', True, BLACK)
+        mouse_rb_rect = mouse_rb_text.get_rect()
+        mouse_rb_rect.center = (self.screen_size[0]//2, 200)
+        self.screen.blit(mouse_rb_text, mouse_rb_rect)
+
+        key_m_text = self.font_c.render(
+            'Press "M" to go to Main Menu', True, BLACK)
+        key_m_rect = key_m_text.get_rect()
+        key_m_rect.center = (self.screen_size[0]//2, 250)
+        self.screen.blit(key_m_text, key_m_rect)
+
+        key_c_text = self.font_c.render(
+            'Press "C" to go to Controls', True, BLACK)
+        key_c_rect = key_c_text.get_rect()
+        key_c_rect.center = (self.screen_size[0]//2, 300)
+        self.screen.blit(key_c_text, key_c_rect)
+
+        key_g_text = self.font_c.render(
+            'Press "G" to go to current game', True, BLACK)
+        key_g_rect = key_g_text.get_rect()
+        key_g_rect.center = (self.screen_size[0]//2, 350)
+        self.screen.blit(key_g_text, key_g_rect)
+
+        key_esc_text = self.font_c.render('ESC to close the game', True, BLACK)
+        key_esc_rect = key_esc_text.get_rect()
+        key_esc_rect.center = (self.screen_size[0]//2, 400)
+        self.screen.blit(key_esc_text, key_esc_rect)
+
+        pygame.display.flip()
 
     def draw_menu(self):
         self.screen.fill(LIGHT_GRAY)
         self.font = pygame.font.Font('font/game_plan_dker.ttf', 32)
+        self.font_c = pygame.font.Font('font/prussian_brew_gemfonts.ttf', 32)
         self.font_50 = pygame.font.Font('font/game_plan_dker.ttf', 50)
 
         minesweeper_text = self.font_50.render('MINESWEEPER', True, BLACK)
@@ -145,6 +212,12 @@ class Game():
         self.advanced_rect = advanced_text.get_rect()
         self.advanced_rect.center = (self.screen_size[0]//2, 250)
         self.screen.blit(advanced_text, self.advanced_rect)
+
+        controls_text = self.font.render('Controls', True, BLACK)
+        self.controls_rect = controls_text.get_rect()
+        self.controls_rect.center = (self.screen_size[0]//2, 300)
+        self.screen.blit(controls_text, self.controls_rect)
+
         pygame.display.flip()
 
     def resize_screen(self, event):
