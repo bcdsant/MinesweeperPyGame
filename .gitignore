@@ -6,6 +6,8 @@
 # Current Project
 venv/
 .vscode
+dist/
+main.spec
 
 # User-specific files
 *.rsuser

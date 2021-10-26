@@ -189,9 +189,9 @@ class Game():
 
     def draw_menu(self):
         self.screen.fill(LIGHT_GRAY)
-        self.font = pygame.font.Font('font/game_plan_dker.ttf', 32)
-        self.font_c = pygame.font.Font('font/prussian_brew_gemfonts.ttf', 32)
-        self.font_50 = pygame.font.Font('font/game_plan_dker.ttf', 50)
+        self.font = pygame.font.Font('fonts/game_plan_dker.ttf', 32)
+        self.font_c = pygame.font.Font('fonts/prussian_brew_gemfonts.ttf', 32)
+        self.font_50 = pygame.font.Font('fonts/game_plan_dker.ttf', 50)
 
         minesweeper_text = self.font_50.render('MINESWEEPER', True, BLACK)
         self.minesweeper_rect = minesweeper_text.get_rect()
