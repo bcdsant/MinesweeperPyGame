@@ -253,6 +253,8 @@ class Game():
             self.draw_board()
         elif self.on_menu:
             self.draw_menu()
+        elif self.on_controls:
+            self.draw_controls()
 
     def draw_board(self):
         # TODO: Break check board state for wining from draw board
